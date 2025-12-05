@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PENGUMUMAN KELULUSAN</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2 class="title">Data Siswa</h2>
+
+    <div class="photo-box">
+        <img id="foto" src="" alt="Foto Siswa">
+    </div>
+
+    <table class="table-info">
+        <tr><td>Nama</td><td id="nama"></td></tr>
+        <tr><td>NISN</td><td id="nisn"></td></tr>
+        <tr><td>Tempat/Tanggal Lahir</td><td id="ttl"></td></tr>
+        <tr><td>Kompetensi Keahlian</td><td id="jurusan"></td></tr>
+        <tr><td>Status</td><td id="status" class="status"></td></tr>
+    </table>
+
+    <h3 class="subtitle">Nilai Siswa</h3>
+
+    <table class="table-nilai">
+        <tr>
+            <th>Mata Pelajaran</th>
+            <th>Nilai</th>
+        </tr>
+        <tbody id="nilai-body"></tbody>
+        <tr>
+            <th>Rata-rata</th>
+            <th id="rata"></th>
+        </tr>
+    </table>
+
+    <button onclick="window.print()" class="btn">
+        Cetak Bukti Kelulusan
+    </button>
+
+</div>
+
+<script>
+async function loadData() {
+    const req = await fetch("data.json");
+    const data = await req.json();
+
+    document.getElementById("foto").src = data.foto;
+    document.getElementById("nama").textContent = data.nama;
+    document.getElementById("nisn").textContent = data.nisn;
+    document.getElementById("ttl").textContent = data.ttl;
+    document.getElementById("jurusan").textContent = data.jurusan;
+    document.getElementById("status").textContent = data.status;
+
+    let tbody = "";
+    let total = 0;
+    let jumlah = 0;
+
+    data.nilai.forEach(n => {
+        tbody += `<tr><td>${n.mapel}</td><td>${n.nilai}</td></tr>`;
+        total += n.nilai;
+        jumlah++;
+    })
+
+    document.getElementById("nilai-body").innerHTML = tbody;
+    document.getElementById("rata").textContent = (total/jumlah).toFixed(2);
+}
+loadData();
+</script>
+
+</body>
+</html>

@@ -3,74 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PENGUMUMAN KELULUSAN</title>
+<title>Cek Kelulusan</title>
 <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<div class="container">
+<div class="search-box">
+    <h2>CEK KELULUSAN 2025</h2>
 
-    <h2 class="title">Data Siswa</h2>
+    <label>NISN</label>
+    <input type="text" id="nisn" placeholder="Masukkan NISN">
 
-    <div class="photo-box">
-        <img id="foto" src="" alt="Foto Siswa">
-    </div>
+    <label>Tanggal Lahir</label>
+    <input type="date" id="tgl">
 
-    <table class="table-info">
-        <tr><td>Nama</td><td id="nama"></td></tr>
-        <tr><td>NISN</td><td id="nisn"></td></tr>
-        <tr><td>Tempat/Tanggal Lahir</td><td id="ttl"></td></tr>
-        <tr><td>Kompetensi Keahlian</td><td id="jurusan"></td></tr>
-        <tr><td>Status</td><td id="status" class="status"></td></tr>
-    </table>
+    <button onclick="cekKelulusan()">CEK KELULUSAN</button>
 
-    <h3 class="subtitle">Nilai Siswa</h3>
-
-    <table class="table-nilai">
-        <tr>
-            <th>Mata Pelajaran</th>
-            <th>Nilai</th>
-        </tr>
-        <tbody id="nilai-body"></tbody>
-        <tr>
-            <th>Rata-rata</th>
-            <th id="rata"></th>
-        </tr>
-    </table>
-
-    <button onclick="window.print()" class="btn">
-        Cetak Bukti Kelulusan
-    </button>
-
+    <p id="error" class="error"></p>
 </div>
 
 <script>
-async function loadData() {
-    const req = await fetch("data.json");
-    const data = await req.json();
+function cekKelulusan() {
+    const nisn = document.getElementById("nisn").value.trim();
+    const tgl = document.getElementById("tgl").value.trim();
 
-    document.getElementById("foto").src = data.foto;
-    document.getElementById("nama").textContent = data.nama;
-    document.getElementById("nisn").textContent = data.nisn;
-    document.getElementById("ttl").textContent = data.ttl;
-    document.getElementById("jurusan").textContent = data.jurusan;
-    document.getElementById("status").textContent = data.status;
+    if (nisn === "" || tgl === "") {
+        document.getElementById("error").innerText = "NISN dan Tanggal Lahir wajib diisi!";
+        return;
+    }
 
-    let tbody = "";
-    let total = 0;
-    let jumlah = 0;
-
-    data.nilai.forEach(n => {
-        tbody += `<tr><td>${n.mapel}</td><td>${n.nilai}</td></tr>`;
-        total += n.nilai;
-        jumlah++;
-    })
-
-    document.getElementById("nilai-body").innerHTML = tbody;
-    document.getElementById("rata").textContent = (total/jumlah).toFixed(2);
+    window.location.href = "hasil.html?nisn=" + nisn + "&tgl=" + tgl;
 }
-loadData();
 </script>
 
 </body>

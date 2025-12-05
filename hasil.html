@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PENGUMUMAN KELULUSAN</title>
+<title>Hasil Kelulusan</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
@@ -33,6 +33,7 @@
             <th>Nilai</th>
         </tr>
         <tbody id="nilai-body"></tbody>
+
         <tr>
             <th>Rata-rata</th>
             <th id="rata"></th>
@@ -47,29 +48,40 @@
 
 <script>
 async function loadData() {
-    const req = await fetch("data.json");
-    const data = await req.json();
+    // Ambil query dari URL
+    const url = new URLSearchParams(window.location.search);
+    const nisnCari = url.get("nisn");
+    const tglCari = url.get("tgl");
 
-    document.getElementById("foto").src = data.foto;
-    document.getElementById("nama").textContent = data.nama;
-    document.getElementById("nisn").textContent = data.nisn;
-    document.getElementById("ttl").textContent = data.ttl;
-    document.getElementById("jurusan").textContent = data.jurusan;
-    document.getElementById("status").textContent = data.status;
+    const request = await fetch("data.json");
+    const data = await request.json();
+
+    const siswa = data.find(s => s.nisn === nisnCari && s.tgl_lahir === tglCari);
+
+    if (!siswa) {
+        document.body.innerHTML = "<h2 style='text-align:center;color:red'>Data tidak ditemukan!</h2>";
+        return;
+    }
+
+    document.getElementById("foto").src = siswa.foto;
+    document.getElementById("nama").textContent = siswa.nama;
+    document.getElementById("nisn").textContent = siswa.nisn;
+    document.getElementById("ttl").textContent = siswa.ttl;
+    document.getElementById("jurusan").textContent = siswa.jurusan;
+    document.getElementById("status").textContent = siswa.status;
 
     let tbody = "";
     let total = 0;
-    let jumlah = 0;
 
-    data.nilai.forEach(n => {
+    siswa.nilai.forEach(n => {
         tbody += `<tr><td>${n.mapel}</td><td>${n.nilai}</td></tr>`;
         total += n.nilai;
-        jumlah++;
-    })
+    });
 
     document.getElementById("nilai-body").innerHTML = tbody;
-    document.getElementById("rata").textContent = (total/jumlah).toFixed(2);
+    document.getElementById("rata").textContent = (total / siswa.nilai.length).toFixed(2);
 }
+
 loadData();
 </script>
 
